@@ -21,4 +21,12 @@
 #include<stdlib.h>
 #include<errno.h>
 
+#define CONFIG_DEBUG
+#ifdef  CONFIG_DEBUG
+#define dbg_print(format,args...) printf(format, ##args)
+#else      /* -----  not CONFIG_DEBUG  ----- */
+#define dbg_print(format,args...) do{} while(0)
+#endif     /* -----  not CONFIG_DEBUG  ----- */
+
+
 int get_temperature(float *temp);

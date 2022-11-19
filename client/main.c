@@ -114,9 +114,9 @@ int main(int argc, char **argv)
 		daemon(0, 0);
 	}
 
-
-
-	sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_STREAM，参数3自适应为0
+	sockfd=socket_and_connect(servip, port);
+/*
+sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_STREAM，参数3自适应为0
 	if(sockfd < 0)
 	{
 		printf("Create socket failure: %s\n", strerror(errno));
@@ -137,7 +137,7 @@ int main(int argc, char **argv)
 		return -2;
 	}
 	printf("Connect to server[%s:%d] successfully!\n", servip, port);
-	
+*/	
 	/*excute*/
 	while(!pro_stop)//当它为0时就执行
 	{

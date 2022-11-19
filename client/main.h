@@ -28,5 +28,13 @@
 #include "ds18b20_get_temp.h"
 #include "functions.h"
 #include "Domain_Resol.h"
+#include "socket_funcs.h"
+
+#define CONFIG_DEBUG
+#ifdef  CONFIG_DEBUG
+#define dbg_print(format,args...) printf(format, ##args)
+#else      /* -----  not CONFIG_DEBUG  ----- */
+#define dbg_print(format,args...) do{} while(0)
+#endif     /* -----  not CONFIG_DEBUG  ----- */
 
 int pro_stop=0;
