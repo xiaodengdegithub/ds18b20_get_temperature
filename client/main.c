@@ -77,6 +77,10 @@ int main(int argc, char **argv)
 
 	if(!servip)
 	{
+		domain_getaddrinfo(&servdn);
+		servip=servdn;
+		printf("%s",servdn);
+		/*
 		memset(&ainfo, 0, sizeof(ainfo));   //将存放信息的结构体清零
 		ainfo.ai_flags = AI_PASSIVE;      //写入期望返回的结构体的相关信息
 		ainfo.ai_socktype = SOCK_STREAM;
@@ -100,7 +104,8 @@ int main(int argc, char **argv)
 			servip=inet_ntoa(seraddr->sin_addr);
 		}
 
-		freeaddrinfo(res);  
+		freeaddrinfo(res);
+		*/
 	}
 
 	/*daemon*/
