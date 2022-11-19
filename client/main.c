@@ -15,34 +15,38 @@
 
 int main(int argc, char **argv)
 {
+	/*getaddrinfo*/
 	int                 getaddrfd = -1;  //定义getaddrinfo函数返回值
 	struct addrinfo     ainfo;    //定义一个结构体
 	struct addrinfo     *res;     //定义函数返回的结构体链表的指针
 	struct addrinfo     *hand;    //定义一个遍历链表的指针
 	struct sockaddr_in  *seraddr;   //定义一个存储返回域名IP信息的结构体指针
+	/*ip or domain*/
+	char				*servip = NULL;
+	char				*servdn = NULL;
+	/*socket*/
 	int					sockfd = -1;
 	int					rv = -1;
 	struct sockaddr_in	servaddr;//我们是ipv4
-	char				*servip = NULL;
-	char				*servdn = NULL;
-	struct hostent		*servhost = NULL;
-	char                **hostip = NULL;
-	char				ipstr[32];
 	int					port = 0;
+	/*excute*/
 	char				buf[1024];
-	int					ch;
 	float				temp;
 	char				tstr[]="temperature: ";
+	/*getopt*/
+	int					daemon_run = 0;
+	int					ch;
 	char				str[64];
 	struct option		opts[] = {
 		{"ipaddr", required_argument, NULL, 'i'},
 		{"domain name", required_argument, NULL, 'd'},
 		{"port", required_argument, NULL, 'P'},
+		{"daemon", no_argument, NULL, 'b'},
 		{"help", no_argument, NULL, 'h'},
 		{NULL, 0, NULL, 0}
 	};
 
-	while( (ch=getopt_long(argc, argv, "i:d:p:h", opts, NULL)) != -1)//h不用加参数,所以后面不加":"
+	while( (ch=getopt_long(argc, argv, "i:d:p:bh", opts, NULL)) != -1)//h不用加参数,所以后面不加":"
 	{
 		switch(ch)
 		{
@@ -54,6 +58,9 @@ int main(int argc, char **argv)
 				break;
 			case 'p':
 				port=atoi(optarg);
+				break;
+			case 'b':
+				daemon_run=1;
 				break;
 			case 'h':
 				print_usage(argv[0]);
@@ -96,6 +103,14 @@ int main(int argc, char **argv)
 		freeaddrinfo(res);  
 	}
 
+	/*daemon*/
+	if(daemon_run)
+	{
+		daemon(0, 0);
+	}
+
+
+
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_STREAM，参数3自适应为0
 	if(sockfd < 0)
 	{
@@ -117,7 +132,8 @@ int main(int argc, char **argv)
 		return -2;
 	}
 	printf("Connect to server[%s:%d] successfully!\n", servip, port);
-
+	
+	/*excute*/
 	while(!pro_stop)//当它为0时就执行
 	{
 		/*		rv = write(sockfd, MSG_STR, strlen(MSG_STR));
