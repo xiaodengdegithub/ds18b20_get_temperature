@@ -108,6 +108,9 @@ int main(int argc, char **argv)
 		*/
 	}
 
+	signal(SIGINT, stop);
+	signal(SIGTERM, stop);
+
 	/*daemon*/
 	if(daemon_run)
 	{
@@ -188,5 +191,10 @@ sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_ST
 	}
 
 	close(sockfd);
+}
+
+void stop()
+{
+    pro_stop = 1;
 }
 

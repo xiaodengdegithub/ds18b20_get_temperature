@@ -44,6 +44,5 @@ int domain_getaddrinfo(char **servdn)
 		printf("IP address: %s\n", inet_ntoa(seraddr->sin_addr));  //inet_ntoa函数将字符串类型IP地址转化为点分十进制
 		*servdn=inet_ntoa(seraddr->sin_addr);
 	}
-	printf("%s",*servdn);
 	freeaddrinfo(res);
 }

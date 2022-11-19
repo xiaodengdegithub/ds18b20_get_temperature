@@ -23,7 +23,7 @@
 #include <stdlib.h>//包含了C语言的一些常用库函数。如动态内存相关的malloc, realloc,zalloc,calloc,free等。随机数相关的rand,srand等。系统相关的system, getenv,setenv等。
 #include <getopt.h>//getopt()原型是int getopt( int argc, char *const argv[], const char *optstring ); 调用一次，返回一个选项。 在命令行选项参数再也检查不到optstring中包含的选项时，返回－1，同时optind储存第一个不包含选项的命令行参数。
 //#include <netdb.h>//包含域名解析中的getaddrinfo()函数和gethostbyname()
-
+#include <signal.h>//用于signal或sigaction安装信号
 
 #include "ds18b20_get_temp.h"
 #include "functions.h"
@@ -38,3 +38,4 @@
 #endif     /* -----  not CONFIG_DEBUG  ----- */
 
 int pro_stop=0;
+void stop();
