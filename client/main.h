@@ -29,6 +29,7 @@
 #include "functions.h"
 #include "Domain_Resol.h"
 #include "socket_funcs.h"
+#include "logger.h"
 
 #define CONFIG_DEBUG
 #ifdef  CONFIG_DEBUG
