@@ -37,5 +37,8 @@
 #define dbg_print(format,args...) do{} while(0)
 #endif     /* -----  not CONFIG_DEBUG  ----- */
 
+
+#define	MSG_STR "Here is Client, please Charlie Mike."			/*  */
+
 int pro_stop=0;
-void stop();
+void stop(int signum);

@@ -144,14 +144,14 @@ sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_ST
 	/*excute*/
 	while(!pro_stop)//当它为0时就执行
 	{
-		/*		rv = write(sockfd, MSG_STR, strlen(MSG_STR));
+				rv = write(sockfd, MSG_STR, strlen(MSG_STR));
 				if(rv < 0)
 				{
 				printf("write to server by sockfd[%d] failure : %s\n",
 				sockfd, strerror(errno));
 				break;
-				}	*/
-
+				}	
+/* 
 		rv = get_temperature(&temp);
 		if(rv<0)
 		{
@@ -166,7 +166,7 @@ sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_ST
 			printf("write to server by sockfd[%d] failure : %s\n",
 					sockfd, strerror(errno));
 			break;
-		}	
+		}*/	
 
 		memset(buf, 0, sizeof(buf));
 		rv = read(sockfd, buf, sizeof(buf));
@@ -193,7 +193,7 @@ sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_ST
 	close(sockfd);
 }
 
-void stop()
+void stop(int signum)
 {
     pro_stop = 1;
 }
