@@ -108,6 +108,13 @@ int main(int argc, char **argv)
 		*/
 	}
 
+	if(logger_init("running.log",LOG_LEVEL_DEBUG)<0)
+	{
+		fprintf(stderr, "initial logger system failure\n");
+		return -1;
+	}
+	
+	/*set signal */
 	signal(SIGINT, stop);
 	signal(SIGTERM, stop);
 
@@ -115,6 +122,7 @@ int main(int argc, char **argv)
 	if(daemon_run)
 	{
 		daemon(0, 0);
+		log_info("running daemon\n");
 	}
 
 	sockfd=socket_and_connect(servip, port);
@@ -159,7 +167,7 @@ sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_ST
 			break;
 		}
 
-		sprintf(str,"%s%f\n",tstr,temp);
+		sprintf(str,36,"%s%f\n",tstr,temp);
 		rv = write(sockfd, str, strlen(str));
 		if(rv < 0)
 		{
