@@ -15,11 +15,27 @@
 
 void print_usage(char *progname)
 {
-	printf("%s usage: \n", progname);
-	printf("-i(--ipaddr): sepcify server IP address.\n");
-	printf("-d(--domain name): sepcify server domain name.\n");
-	printf("-p(--port): sepcify server port.\n");
-	printf("-h(--Help): print this help information.\n");
+	log_warn("%s usage: \n", progname);
+    log_warn("-i(--ipaddr): sepcify server IP address.\n");
+    log_warn("-d(--domain name): sepcify server domain name.\n");
+    log_warn("-p(--port): sepcify server port.\n");
+	log_warn("-t(--time): sepcify time.\n");
+    log_warn("-h(--Help): print this help information.\n");
+	
+	dbg_printf("%s usage: \n", progname);
+    dbg_printf("-i(--ipaddr): sepcify server IP address.\n");
+    dbg_printf("-d(--domain name): sepcify server domain name.\n");
+    dbg_printf("-p(--port): sepcify server port.\n");
+	dbg_printf("-t(--time): sepcify time.\n");
+    dbg_printf("-h(--Help): print this help information.\n");
 
 	return ;
+}
+
+int get_sn(char* SN,int len)  
+{
+    int sn=1;
+    memset(SN,0,sizeof(SN));
+    snprintf(SN,len,"dsdyh%04d",sn);
+    return 0;
 }

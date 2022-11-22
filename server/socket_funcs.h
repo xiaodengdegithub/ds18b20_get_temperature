@@ -11,6 +11,9 @@
  *                 
  ********************************************************************************/
 
+#ifndef _SOCKET_FUNS_H_
+#define _SOCKET_FUNS_H_
+
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -29,3 +32,5 @@
 
 int socket_server_init(char *listen_ip, int listen_port);
 void set_socket_rlimit(void);
+
+#endif

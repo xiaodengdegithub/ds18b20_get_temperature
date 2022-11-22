@@ -11,6 +11,9 @@
  *                 
  ********************************************************************************/
 
+#ifndef  _DOMAIN_RESOL_H_
+#define  _DOMAIN_RESOL_H_
+
 #include <stdio.h>
 #include <errno.h>
 #include <string.h>
@@ -29,3 +32,5 @@
 
 
 int domain_getaddrinfo(char **servdn);
+
+#endif

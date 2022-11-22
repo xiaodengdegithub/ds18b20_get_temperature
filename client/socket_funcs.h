@@ -11,6 +11,9 @@
  *                 
  ********************************************************************************/
 
+#ifndef _SOCKET_FUNCS_H_
+#define _SOCKET_FUNCS_H_
+
 #include <stdio.h>
 #include <string.h>
 #include <arpa/inet.h>
@@ -26,3 +29,7 @@
 #endif     /* -----  not CONFIG_DEBUG  ----- */
 
 int socket_and_connect(char *servip, int port);
+
+#endif
+
+

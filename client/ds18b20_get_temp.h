@@ -11,6 +11,9 @@
  *                 
  ********************************************************************************/
 
+#ifndef _DS18B20_GET_TEMP_H_
+#define _DS18B20_GET_TEMP_H_
+
 #include<stdio.h>
 #include<sys/types.h>
 #include<sys/stat.h>
@@ -30,3 +33,5 @@
 
 
 int get_temperature(float *temp);
+
+#endif

@@ -11,6 +11,9 @@
  *                 
  ********************************************************************************/
 
+#ifndef _MAIN_H_
+#define _MAIN_H_
+
 #include <stdio.h>//定义输入／输出函数。
 #include <errno.h>//定义错误码。
 #include <string.h>//字符串处理。
@@ -43,3 +46,5 @@
 
 int pro_stop=0;
 void stop(int signum);
+
+#endif

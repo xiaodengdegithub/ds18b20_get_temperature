@@ -11,11 +11,16 @@
  *                 
  ********************************************************************************/
 
+#ifndef _SERSQL_H_
+#define _SERSQL_H_
+
 #include <sqlite3.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+#include "logger.h"
 
 #define CONFIG_DEBUG
 #ifdef  CONFIG_DEBUG
@@ -25,3 +30,6 @@
 #endif     /* -----  not CONFIG_DEBUG  ----- */
 
 
+
+
+#endif

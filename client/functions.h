@@ -11,6 +11,9 @@
  *                 
  ********************************************************************************/
 
+#ifndef _FUNCTIONS_H_
+#define _FUNCTIONS_H_
+
 #include <stdio.h>
 
 #define CONFIG_DEBUG
@@ -21,3 +24,6 @@
 #endif     /* -----  not CONFIG_DEBUG  ----- */
 
 void print_usage(char *progname);
+int get_sn(char* SN,int len);
+
+#endif

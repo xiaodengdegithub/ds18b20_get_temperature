@@ -34,6 +34,7 @@ int main(int argc, char **argv)
 	float				temp;
 	char				tstr[]="temperature: ";
 	/*getopt*/
+	int					time = 10;
 	int					daemon_run = 0;
 	int					ch;
 	char				str[64];
@@ -41,12 +42,13 @@ int main(int argc, char **argv)
 		{"ipaddr", required_argument, NULL, 'i'},
 		{"domain name", required_argument, NULL, 'd'},
 		{"port", required_argument, NULL, 'P'},
+		{"time", required_argument, NULL, 't'},
 		{"daemon", no_argument, NULL, 'b'},
 		{"help", no_argument, NULL, 'h'},
 		{NULL, 0, NULL, 0}
 	};
 
-	while( (ch=getopt_long(argc, argv, "i:d:p:bh", opts, NULL)) != -1)//h不用加参数,所以后面不加":"
+	while( (ch=getopt_long(argc, argv, "i:d:p:t:bh", opts, NULL)) != -1)//h不用加参数,所以后面不加":"
 	{
 		switch(ch)
 		{
@@ -59,6 +61,9 @@ int main(int argc, char **argv)
 			case 'p':
 				port=atoi(optarg);
 				break;
+			case 't':
+				time=atoi(optarg);
+				break;
 			case 'b':
 				daemon_run=1;
 				break;
@@ -69,7 +74,7 @@ int main(int argc, char **argv)
 
 	}
 
-	if( !(!servip ^ !servdn) || !port )//^两边的值不同为1，相同为0
+	if( !(!servip ^ !servdn) || !port || !time )//^两边的值不同为1，相同为0
 	{
 		print_usage(argv[0]);
 		return 0;
