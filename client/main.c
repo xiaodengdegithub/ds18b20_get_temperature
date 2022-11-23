@@ -137,7 +137,7 @@ int main(int argc, char **argv)
 		log_info("running daemon\n");
 	}
 	
-	get_sn(SN, sizeof(SN));
+	//get_sn(SN, sizeof(SN));
 	Create_Database(&db);
 	Create_Table(db);
 
@@ -182,13 +182,14 @@ sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_ST
             printf("get temperature failure, return value: %d", rv);
             break;
         }
-
+		
+		get_sn(SN, sizeof(SN));
 		T1 = get_time(datime, sizeof(datime));
 		dbg_print("T1:%ld", T1);
 
 		memset(buf, 0, sizeof(buf));
 		snprintf(buf, 1024, "%s / %s / %f \n", SN, datime, temp);
-		dbg_print("data:%s", buf);
+		dbg_print("full data:%s", buf);
 		while(!pro_stop)
 		{
 			if(socket_connect_state(sockfd)<0)
@@ -209,7 +210,15 @@ sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_ST
 			
 			if((T2 - T1) > time)
 			{
+				log_info("time reached\n");
 				//snprintf(str,36,"%s%f\n",tstr,temp);
+			
+				if(socket_connect_state(sockfd)<0)
+				{
+					Insert_Table(db, SN, datime, temp);
+					break;
+				}
+
 				rv = write(sockfd, str, strlen(str));
 				if(rv < 0)
 				{
@@ -243,10 +252,17 @@ sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_ST
 			{
 				log_info("time not reached \n");
 				
-				//if((rv
+				rv = table_check_write_clean(db, sockfd, SN)
+				if(rv < 0)
+				{
+					log_warn("table have no more data\n");
+					continue;
+				}
+				log_info("send all data of table and clean table\n");
 
-			
-	
+				sleep(1);
+
+				continue;
 			}
 		}
 	}
