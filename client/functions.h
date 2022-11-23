@@ -15,6 +15,11 @@
 #define _FUNCTIONS_H_
 
 #include <stdio.h>
+#include <string.h>
+#include <time.h>
+#include <stdlib.h>
+
+#include "logger.h"
 
 #define CONFIG_DEBUG
 #ifdef  CONFIG_DEBUG
@@ -25,5 +30,7 @@
 
 void print_usage(char *progname);
 int get_sn(char* SN,int len);
+long get_time(char *datime,int len);
+
 
 #endif

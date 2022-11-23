@@ -14,12 +14,15 @@
 #ifndef _SOCKET_FUNCS_H_
 #define _SOCKET_FUNCS_H_
 
+#include <sys/types.h>
 #include <stdio.h>
 #include <string.h>
 #include <arpa/inet.h>
 #include <sys/types.h>          /* See NOTES */
 #include <sys/socket.h>
 #include <errno.h>
+#include <netinet/ip.h>
+#include <netinet/tcp.h>
 
 #define CONFIG_DEBUG
 #ifdef  CONFIG_DEBUG
@@ -29,6 +32,8 @@
 #endif     /* -----  not CONFIG_DEBUG  ----- */
 
 int socket_and_connect(char *servip, int port);
+int socket_connect_state(int sockfd);
+
 
 #endif
 

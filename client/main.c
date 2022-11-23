@@ -29,7 +29,13 @@ int main(int argc, char **argv)
 	int					rv = -1;
 	struct sockaddr_in	servaddr;//我们是ipv4
 	int					port = 0;
+	/*time*/
+	char				datime[100];
+	long				T1=0;
+	long				T2=0;
 	/*excute*/
+	sqlite3				*db;
+	char				SN[16];
 	char				buf[1024];
 	float				temp;
 	char				tstr[]="temperature: ";
@@ -113,7 +119,8 @@ int main(int argc, char **argv)
 		*/
 	}
 
-	if(logger_init("running.log",LOG_LEVEL_DEBUG)<0)
+	//if(logger_init("running.log",LOG_LEVEL_DEBUG)<0)
+	if(logger_init("stdout",LOG_LEVEL_DEBUG)<0)
 	{
 		fprintf(stderr, "initial logger system failure\n");
 		return -1;
@@ -129,6 +136,10 @@ int main(int argc, char **argv)
 		daemon(0, 0);
 		log_info("running daemon\n");
 	}
+	
+	get_sn(SN, sizeof(SN));
+	Create_Database(&db);
+	Create_Table(db);
 
 	sockfd=socket_and_connect(servip, port);
 /*
@@ -157,52 +168,88 @@ sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_ST
 	/*excute*/
 	while(!pro_stop)//当它为0时就执行
 	{
-				rv = write(sockfd, MSG_STR, strlen(MSG_STR));
-				if(rv < 0)
-				{
-				printf("write to server by sockfd[%d] failure : %s\n",
-				sockfd, strerror(errno));
-				break;
-				}	
-/* 
-		rv = get_temperature(&temp);
-		if(rv<0)
-		{
-			printf("get temperature failure, return value: %d", rv);
-			break;
-		}
-
-		sprintf(str,36,"%s%f\n",tstr,temp);
-		rv = write(sockfd, str, strlen(str));
+		/*rv = write(sockfd, MSG_STR, strlen(MSG_STR));
 		if(rv < 0)
 		{
 			printf("write to server by sockfd[%d] failure : %s\n",
 					sockfd, strerror(errno));
 			break;
-		}*/	
+		}*/
+
+		rv = get_temperature(&temp);
+		if(rv<0)
+        {
+            printf("get temperature failure, return value: %d", rv);
+            break;
+        }
+
+		T1 = get_time(datime, sizeof(datime));
+		dbg_print("T1:%ld", T1);
 
 		memset(buf, 0, sizeof(buf));
-		rv = read(sockfd, buf, sizeof(buf));
-		if(rv < 0)
+		snprintf(buf, 1024, "%s / %s / %f \n", SN, datime, temp);
+		dbg_print("data:%s", buf);
+		while(!pro_stop)
 		{
-			printf("Read data from server by sockfd[%d] failure: %s\n",
-					sockfd, strerror(errno));
-			break;
-		}
-		else if(rv == 0)
-		{
-			printf("Socket[%d] get disconnected\n", sockfd);
-			break;
-		}
-		else if(rv > 0)
-		{
-			printf("Read %d bytes data from Server: %s\n",
-					rv, buf);
-			sleep(10);
-		}	
+			if(socket_connect_state(sockfd)<0)
+			{
+				dbg_print("sockfd[%d] disconnected!\n", sockfd);
+				log_error("sockfd[%d] disconnected!\n", sockfd);
+				if(sockfd > 0)
+				{
+					close(sockfd);
+					log_warn("sockfd[%d] close", sockfd);
+				}
+				sockfd = socket_and_connect(servip, port);
+				log_info("socket connect again\n"); 
+			}
 
+			T2 = get_time(datime, sizeof(datime));
+			dbg_print("T2:%ld\n", T2);
+			
+			if((T2 - T1) > time)
+			{
+				//snprintf(str,36,"%s%f\n",tstr,temp);
+				rv = write(sockfd, str, strlen(str));
+				if(rv < 0)
+				{
+						printf("write to server by sockfd[%d] failure : %s\n",
+								sockfd, strerror(errno));
+						break;
+				}
+	
+				memset(buf, 0, sizeof(buf));
+				rv = read(sockfd, buf, sizeof(buf));
+				if(rv < 0)
+				{
+					printf("Read data from server by sockfd[%d] failure: %s\n",
+							sockfd, strerror(errno));
+					break;
+				}
+				else if(rv == 0)
+				{
+					printf("Socket[%d] get disconnected\n", sockfd);
+					break;
+				}
+				else if(rv > 0)
+				{
+					printf("Read %d bytes data from Server: %s\n",
+							rv, buf);
+					sleep(10);
+				}
+
+			}
+			else
+			{
+				log_info("time not reached \n");
+				
+				//if((rv
+
+			
+	
+			}
+		}
 	}
-
 	close(sockfd);
 }
 

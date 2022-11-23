@@ -33,6 +33,7 @@
 #include "Domain_Resol.h"
 #include "socket_funcs.h"
 #include "logger.h"
+#include "clisql.h"
 
 #define CONFIG_DEBUG
 #ifdef  CONFIG_DEBUG

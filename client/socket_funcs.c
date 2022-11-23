@@ -23,7 +23,7 @@ int socket_and_connect(char *servip, int port)
 	if(sockfd < 0)
 	{
 		printf("Create socket failure: %s\n", strerror(errno));
-		return -2;
+		return -1;
 	}
 	printf("Creact socket[%d] successfully!\n", sockfd);
 
@@ -43,4 +43,18 @@ int socket_and_connect(char *servip, int port)
 	return sockfd;
 }
 
+int socket_connect_state(int sockfd)
+{
+	struct tcp_info 		info;
+	int 					len = sizeof(info);
 
+	getsockopt(sockfd, IPPROTO_TCP, TCP_INFO, &info, (socklen_t *)&len);
+	if(info.tcpi_state==TCP_ESTABLISHED)
+	{
+		return 0;
+	}
+	else
+	{
+		return -1;
+	}
+}
