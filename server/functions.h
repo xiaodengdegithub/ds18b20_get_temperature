@@ -2,23 +2,20 @@
  *      Copyright:  (C) 2022 Deng Yonghao<dengyonghao2001@163.com>
  *                  All rights reserved.
  *
- *       Filename:  clisql.h
- *    Description:  This file client sqlite.h
+ *       Filename:  functions.h
+ *    Description:  This file functions.h
  *
- *        Version:  1.0.0(2022年11月22日)
+ *        Version:  1.0.0(2022年11月23日)
  *         Author:  Deng Yonghao <dengyonghao2001@163.com>
- *      ChangeLog:  1, Release initial version on "2022年11月22日 11时21分57秒"
+ *      ChangeLog:  1, Release initial version on "2022年11月23日 10时25分44秒"
  *                 
  ********************************************************************************/
 
-#ifndef _SERSQL_H_
-#define _SERSQL_H_
+#ifndef _FUNCTIONS_H_
+#define _FUNCTIONS_H_
 
-#include <sqlite3.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
+#include<stdio.h>
+#include <time.h>
 
 #include "logger.h"
 
@@ -29,11 +26,6 @@
 #define dbg_print(format,args...) do{} while(0)
 #endif     /* -----  not CONFIG_DEBUG  ----- */
 
-#define TABLENAME "client_table"
-
-int Create_Database(sqlite3 **db);
-static int callback(void *NotUsed, int argc, char **argv, char **azColName);
-int Create_Table(sqlite3 *db);
-int Insert_Table(sqlite3 *db, char *SN, char *datime, float temp);
+static inline void print_usage(char *progname);
 
 #endif

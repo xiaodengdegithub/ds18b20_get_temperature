@@ -45,7 +45,7 @@ int Create_Table(sqlite3 *db)
  	char			*zErrMsg = 0;
 
 	memset(buf, 0, sizeof(buf));
-	snprintf(buf, sizeof(buf), "CREATE TABLE client_table (SN CHAR(20), DATIME CHAR(100), TEMPERATURE FLOAT);");
+	snprintf(buf, sizeof(buf), "CREATE TABLE %s (SN CHAR(20), DATIME CHAR(100), TEMPERATURE FLOAT);", TABLENAME);
 	log_info("buf:%s\n", buf);
 
 	if(SQLITE_OK != sqlite3_exec(db, buf, callback, 0, &zErrMsg))
@@ -66,8 +66,48 @@ int Insert_Table(sqlite3 *db, char *SN, char *datime, float temp)
 	char			buf[256];
 	char 			*zErrMsg = 0;
 
-	snprintf(buf, 256, "INSERT INTO %s(SN, DATIME, TEMPERATURE)VALUES('%s', '%s', '%f');", SN, SN, datime, temp);
- 
+	memset(buf, 0, sizeof(buf));
+	snprintf(buf, sizeof(buf), "INSERT INTO %s(SN, DATIME, TEMPERATURE)VALUES('%s', '%s', '%f');", TABLENAME, SN, datime, temp);
+	log_info("buf:%s\n", buf);
+
+	if(SQLITE_OK != sqlite3_exec(db, buf, callback, 0, &zErrMsg))
+    {
+        log_error("insert table error:%s\n", zErrMsg);
+        sqlite3_free(zErrMsg);
+        return -2;
+    }
+    else
+    {
+        log_info("insert table successfully\n");
+        return 0;
+    }
+
 }
 
+Table_check_write_clean(sqlite3 *db,int sockfd,char *SN)
+{
+	char			buf[256];
+	char			*zErrMsg = 0;
+
+	memset(buf, 0, sizeof(buf));
+	snprintf(buf, sizeof(buf), "SELECT * FROM %s LIMIT 1;", TABLENAME)
+
+	if(SQLITE_OK != sqlite3_exec(db, buf, callback, 0, &zErrMsg))
+	{
+		log_warn("no more data\n");
+		sqlite3_free(zErrMsg);
+		return -3;
+	}
+	
+	memset
+	snprintf
+
+	if(sqlite3_get_table())
+	{
+
+	}
+
+
+
+}
 

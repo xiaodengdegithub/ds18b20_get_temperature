@@ -21,7 +21,6 @@
 #include <errno.h>
 #include <ctype.h>
 #include <time.h>
-#include <pthread.h>
 #include <getopt.h>
 #include <libgen.h>
 #include <sys/types.h>
@@ -33,6 +32,7 @@
 
 #include "logger.h"
 #include "socket_funcs.h"
+#include "functions.h"
 
 #define CONFIG_DEBUG
 #ifdef  CONFIG_DEBUG
@@ -45,6 +45,7 @@
 #define ARRAY_SIZE(x) (sizeof(x)/sizeof(x[0]))
 
 int pro_stop=0;
+
 void stop(int signum);
 
 #endif

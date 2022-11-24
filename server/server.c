@@ -13,8 +13,6 @@
 
 #include "server.h"
 
-static inline void print_usage(char *progname);
-
 int main(int argc, char **argv)
 {
 	int			listenfd, connfd;
@@ -169,22 +167,6 @@ int main(int argc, char **argv)
 CleanUp:
 	close(listenfd);
 	return 0;
-}
-
-static inline void print_usage(char *progname)
-{
-	printf("Usage: %s [OPTION]...\n", progname);
-
-	printf(" %s is a socket server program, which used to verify client and echo back string from it\n",
-			progname);
-	printf("\nMandatory arguments to long options are mandatory for short options too:\n");
-
-	printf(" -p[port ] Socket server port address\n");
-	printf(" -b[daemon ] set program running on background\n");
-	printf(" -h[help ] Display this help information\n");
-
-	printf("\nExample: %s -p 8900 -b\n", progname);
-	return ;
 }
 
 void stop(int signum)
