@@ -87,7 +87,11 @@ int Insert_Table(sqlite3 *db, char *SN, char *datime, float temp)
 Table_check_write_clean(sqlite3 *db,int sockfd,char *SN)
 {
 	char			buf[256];
-	char			*zErrMsg = 0;
+	char			*zErrMsg = 0;i
+	char			**dbResult;
+	int				nRow = 0;
+	int				nColumn = 0;
+	int				rv;
 
 	memset(buf, 0, sizeof(buf));
 	snprintf(buf, sizeof(buf), "SELECT * FROM %s LIMIT 1;", TABLENAME)
@@ -99,15 +103,44 @@ Table_check_write_clean(sqlite3 *db,int sockfd,char *SN)
 		return -3;
 	}
 	
-	memset
-	snprintf
+	memset(buf, 0, sizeof(buf));
+	snprintf(buf, size(buf), "SELECT * FROM %s;",TABLENAME);
 
-	if(sqlite3_get_table())
+	if(SQLITE_OK != sqlite3_get_table(db, buf, &dbResult, &nRow, &nColumn, &zErrMsg))
 	{
-
+		log_error("got data error\n");
+		sqlite3_free(zErrMsg);
+		return -4;
 	}
 
+	memset(buf, 0, sizeof(buf));
+	for(int i=1; i<=nRow; i++)
+	{
+		memset(buf, 0, sizeof(buf));
+		snprintf(buf, sizeof(buf), "%s/%s/%f", dbResult[i*nColumn + 0], dbResult[i*nColumn + 1], dbResult[i*nColumn + 2] );
+		
+		rv = write(sockfd, buf, strlen(buf));
+		if(rv < 0)
+		{
+			log_error("write to server by sockfd[%d] failure : %s\n",
+					sockfd, strerror(errno));
+			break;
+		}
+		else
+		{
+			log_info("write a row of client table to server[%d] successfully\n",
+					sockfd);
+		}
+	}
+	memset(buf, 0, sizeof(buf));
+	snprintf(buf, sizeof(buf), "DELETE * FROM %s;", TABLENAME)
 
+	if(SQLITE_OK != sqlite3_get_table(db, buf, &dbResult, &nRow, &nColumn, &zErrMsg))
+    {
+        log_error("delete data error\n");
+        sqlite3_free(zErrMsg);
+        return -5;
+    }
 
 }
 
