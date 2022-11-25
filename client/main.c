@@ -184,11 +184,13 @@ sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_ST
             break;
         }
 		
+		get_time(datime, sizeof(datime));
+
 		get_sn(SN, sizeof(SN));
 
 		memset(buf, 0, sizeof(buf));
 		snprintf(buf, 1024, "%s/%s/%f\n", SN, datime, temp);
-		dbg_print("full data:%s\n", buf);
+		dbg_print("full data: %s\n", buf);
 		while(!pro_stop)
 		{
 			if(socket_connect_state(sockfd)<0)
