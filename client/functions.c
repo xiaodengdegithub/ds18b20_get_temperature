@@ -26,7 +26,7 @@ void print_usage(char *progname)
     dbg_print("-i(--ipaddr): sepcify server IP address.\n");
     dbg_print("-d(--domain name): sepcify server domain name.\n");
     dbg_print("-p(--port): sepcify server port.\n");
-	dbg_print("-t(--time): sepcify time.\n");
+	dbg_print("-t(--time): sepcify time (default 10 seconds).\n");
     dbg_print("-h(--Help): print this help information.\n");
 
 	return ;
@@ -53,7 +53,7 @@ long get_time(char *datime,int len)
 	snprintf(datime, len,"%04d-%02d-%02d %02d:%02d:%02d", t->tm_year+1900, t->tm_mon+1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec);
 	
 	times = time(NULL);
-	dbg_print("times:%ld\n", times);
+	log_info("times:%ld\n", times);
 
 	return times;
 }

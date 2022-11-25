@@ -22,10 +22,10 @@ int socket_and_connect(char *servip, int port)
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_STREAM，参数3自适应为0
 	if(sockfd < 0)
 	{
-		printf("Create socket failure: %s\n", strerror(errno));
+		log_error("Create socket failure: %s\n", strerror(errno));
 		return -1;
 	}
-	printf("Creact socket[%d] successfully!\n", sockfd);
+	log_info("Creact socket[%d] successfully!\n", sockfd);
 
 	memset(&servaddr, 0, sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
@@ -35,11 +35,11 @@ int socket_and_connect(char *servip, int port)
 	rv = connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr));//                                                                                   我们servaddr是sockaddr_in类型的，而我们的connect中第二个参数需要sockaddr类型，所以用一个强制转换
 	if(rv < 0)
 	{
-		printf("Connect to server[%s:%d] failure: %s\n",
+		log_error("Connect to server[%s:%d] failure: %s\n",
 				servip, port, strerror(errno));
 		return -2;
 	}
-	printf("Connect to server[%s:%d] successfully!\n", servip, port);
+	log_info("Connect to server[%s:%d] successfully!\n", servip, port);
 	return sockfd;
 }
 

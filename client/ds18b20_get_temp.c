@@ -27,7 +27,8 @@ int get_temperature(float *temp)
 	dirp=opendir(w1_path);
 	if( !dirp )
 	{
-		printf("open floder %s failure: %s\n", w1_path, strerror(errno));
+		//dbg_print("open floder %s failure: %s\n", w1_path, strerror(errno));
+		log_error("open floder %s failure: %s\n", w1_path, strerror(errno));
 		return -1;
 	}
 
@@ -44,7 +45,7 @@ int get_temperature(float *temp)
 
 	if( !found )
 	{
-		printf("Can not find ds18b20 chipset\n");
+		log_error("Can not find ds18b20 chipset\n");
 		return -2;
 	}
 
@@ -53,8 +54,8 @@ int get_temperature(float *temp)
 
 	if( (fd=open(w1_path, O_RDONLY)) < 0)
 	{
-		printf("open file failure: %s\n", strerror(errno));
-		perror("open file failure");
+		log_error("open file failure: %s\n", strerror(errno));
+		perror("open file failure\n");
 		return -3;
 	}
 
@@ -62,20 +63,20 @@ int get_temperature(float *temp)
 
 	if(read(fd, buf, sizeof(buf)) < 0)
 	{
-		printf("read data from fd=%d failure %s\n", fd, strerror(errno));
+		log_error("read data from fd=%d failure %s\n", fd, strerror(errno));
 		return -4;
 	}
 	ptr=strstr(buf, "t=");
 	if( !ptr )
 	{
-		printf("Can not find t= string\n");
+		log_error("Can not find t= string\n");
 		return -5;
 	}
 
 	ptr += 2;
 
 	*temp = atof(ptr)/1000;
-	printf("temperature: %f\n", *temp);
+	log_info("temperature: %f\n", *temp);
 
 	close(fd);
 

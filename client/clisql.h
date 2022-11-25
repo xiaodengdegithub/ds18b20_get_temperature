@@ -35,5 +35,6 @@ int Create_Database(sqlite3 **db);
 static int callback(void *NotUsed, int argc, char **argv, char **azColName);
 int Create_Table(sqlite3 *db);
 int Insert_Table(sqlite3 *db, char *SN, char *datime, float temp);
+int Table_check_write_clean(sqlite3 *db,int sockfd,char *SN);
 
 #endif

@@ -84,17 +84,17 @@ int Insert_Table(sqlite3 *db, char *SN, char *datime, float temp)
 
 }
 
-Table_check_write_clean(sqlite3 *db,int sockfd,char *SN)
+int Table_check_write_clean(sqlite3 *db,int sockfd,char *SN)
 {
 	char			buf[256];
-	char			*zErrMsg = 0;i
+	char			*zErrMsg = 0;
 	char			**dbResult;
 	int				nRow = 0;
 	int				nColumn = 0;
 	int				rv;
 
 	memset(buf, 0, sizeof(buf));
-	snprintf(buf, sizeof(buf), "SELECT * FROM %s LIMIT 1;", TABLENAME)
+	snprintf(buf, sizeof(buf), "SELECT * FROM %s LIMIT 1;", TABLENAME);
 
 	if(SQLITE_OK != sqlite3_exec(db, buf, callback, 0, &zErrMsg))
 	{
@@ -104,7 +104,7 @@ Table_check_write_clean(sqlite3 *db,int sockfd,char *SN)
 	}
 	
 	memset(buf, 0, sizeof(buf));
-	snprintf(buf, size(buf), "SELECT * FROM %s;",TABLENAME);
+	snprintf(buf, sizeof(buf), "SELECT * FROM %s;",TABLENAME);
 
 	if(SQLITE_OK != sqlite3_get_table(db, buf, &dbResult, &nRow, &nColumn, &zErrMsg))
 	{
@@ -117,7 +117,7 @@ Table_check_write_clean(sqlite3 *db,int sockfd,char *SN)
 	for(int i=1; i<=nRow; i++)
 	{
 		memset(buf, 0, sizeof(buf));
-		snprintf(buf, sizeof(buf), "%s/%s/%f", dbResult[i*nColumn + 0], dbResult[i*nColumn + 1], dbResult[i*nColumn + 2] );
+		snprintf(buf, sizeof(buf), "%s/%s/%f", dbResult[i*nColumn + 0], dbResult[i*nColumn + 1], atof(dbResult[i*nColumn + 2]) );
 		
 		rv = write(sockfd, buf, strlen(buf));
 		if(rv < 0)
@@ -133,7 +133,7 @@ Table_check_write_clean(sqlite3 *db,int sockfd,char *SN)
 		}
 	}
 	memset(buf, 0, sizeof(buf));
-	snprintf(buf, sizeof(buf), "DELETE * FROM %s;", TABLENAME)
+	snprintf(buf, sizeof(buf), "DELETE * FROM %s;", TABLENAME);
 
 	if(SQLITE_OK != sqlite3_get_table(db, buf, &dbResult, &nRow, &nColumn, &zErrMsg))
     {

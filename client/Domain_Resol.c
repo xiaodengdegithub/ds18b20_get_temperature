@@ -32,16 +32,16 @@ int domain_getaddrinfo(char **servdn)
 
 	if(getaddrfd != 0)   //如果函数调用失败
 	{
-		printf("Analyze faliure:%s\n",strerror(errno));
+		log_error("Analyze faliure:%s\n",strerror(errno));
 		return -1;
 	}
 
-	printf("Analyze successfully\n");  //调用函数成功
+	log_info("Analyze successfully\n");  //调用函数成功
 
 	for (hand = res; hand != NULL; hand = hand->ai_next)   //遍历链表每一个节点，查询关于存储返回的IP的信息
 	{
 		seraddr = (struct sockaddr_in *)hand->ai_addr;  //将返回的IP信息存储在addr指向的结构体中
-		printf("IP address: %s\n", inet_ntoa(seraddr->sin_addr));  //inet_ntoa函数将字符串类型IP地址转化为点分十进制
+		log_info("IP address: %s\n", inet_ntoa(seraddr->sin_addr));  //inet_ntoa函数将字符串类型IP地址转化为点分十进制
 		*servdn=inet_ntoa(seraddr->sin_addr);
 	}
 	freeaddrinfo(res);

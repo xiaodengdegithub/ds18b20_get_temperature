@@ -80,7 +80,7 @@ int main(int argc, char **argv)
 
 	}
 
-	if( !(!servip ^ !servdn) || !port || !time )//^两边的值不同为1，相同为0
+	if( !(!servip ^ !servdn) || !port )//^两边的值不同为1，相同为0
 	{
 		print_usage(argv[0]);
 		return 0;
@@ -90,7 +90,7 @@ int main(int argc, char **argv)
 	{
 		domain_getaddrinfo(&servdn);
 		servip=servdn;
-		printf("%s",servdn);
+		log_info("%s",servdn);
 		/*
 		memset(&ainfo, 0, sizeof(ainfo));   //将存放信息的结构体清零
 		ainfo.ai_flags = AI_PASSIVE;      //写入期望返回的结构体的相关信息
@@ -102,16 +102,16 @@ int main(int argc, char **argv)
 
 		if(getaddrfd != 0)   //如果函数调用失败
 		{
-			printf("Analyze faliure:%s\n",strerror(errno));
+			log_error("Analyze faliure:%s\n",strerror(errno));
 			return -1;
 		}
 
-		printf("Analyze successfully\n");  //调用函数成功
+		log_info("Analyze successfully\n");  //调用函数成功
 
 		for (hand = res; hand != NULL; hand = hand->ai_next)   //遍历链表每一个节点，查询关于存储返回的IP的信息
 		{
 			seraddr = (struct sockaddr_in *)hand->ai_addr;  //将返回的IP信息存储在addr指向的结构体中
-			printf("IP address: %s\n", inet_ntoa(seraddr->sin_addr));  //inet_ntoa函数将字符串类型IP地址转化为点分十进制
+			log_info("IP address: %s\n", inet_ntoa(seraddr->sin_addr));  //inet_ntoa函数将字符串类型IP地址转化为点分十进制
 			servip=inet_ntoa(seraddr->sin_addr);
 		}
 
@@ -123,6 +123,7 @@ int main(int argc, char **argv)
 	if(logger_init("stdout",LOG_LEVEL_DEBUG)<0)
 	{
 		fprintf(stderr, "initial logger system failure\n");
+		dbg_print("initial logger system failure\n");
 		return -1;
 	}
 	
@@ -146,10 +147,10 @@ int main(int argc, char **argv)
 sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_STREAM，参数3自适应为0
 	if(sockfd < 0)
 	{
-		printf("Create socket failure: %s\n", strerror(errno));
+		log_error("Create socket failure: %s\n", strerror(errno));
 		return -2;
 	}
-	printf("Creact socket[%d] successfully!\n", sockfd);
+	log_info("Creact socket[%d] successfully!\n", sockfd);
 
 	memset(&servaddr, 0, sizeof(servaddr));
 	servaddr.sin_family = AF_INET;
@@ -159,11 +160,11 @@ sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_ST
 	rv = connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr));//我们servaddr是sockaddr_in类型的，而我们的connect中第二个参数需要sockaddr类型，所以用一个强制转换
 	if(rv < 0)
 	{
-		printf("Connect to server[%s:%d] failure: %s\n",
+		log_error("Connect to server[%s:%d] failure: %s\n",
 				servip, port, strerror(errno));
 		return -2;
 	}
-	printf("Connect to server[%s:%d] successfully!\n", servip, port);
+	log_info("Connect to server[%s:%d] successfully!\n", servip, port);
 */	
 	/*excute*/
 	while(!pro_stop)//当它为0时就执行
@@ -171,7 +172,7 @@ sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_ST
 		/*rv = write(sockfd, MSG_STR, strlen(MSG_STR));
 		if(rv < 0)
 		{
-			printf("write to server by sockfd[%d] failure : %s\n",
+			log_error("write to server by sockfd[%d] failure : %s\n",
 					sockfd, strerror(errno));
 			break;
 		}*/
@@ -179,7 +180,7 @@ sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_ST
 		rv = get_temperature(&temp);
 		if(rv<0)
         {
-            printf("get temperature failure, return value: %d", rv);
+            log_error("get temperature failure, return value: %d", rv);
             break;
         }
 		
@@ -219,11 +220,12 @@ sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_ST
 					break;
 				}
 
-				rv = write(sockfd, str, strlen(str));
+				rv = write(sockfd, buf, strlen(buf));
 				if(rv < 0)
 				{
-						printf("write to server by sockfd[%d] failure : %s\n",
+						log_error("write to server by sockfd[%d] failure : %s\n",
 								sockfd, strerror(errno));
+						Insert_Table(db, SN, datime, temp);
 						break;
 				}
 	
@@ -231,20 +233,20 @@ sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_ST
 				rv = read(sockfd, buf, sizeof(buf));
 				if(rv < 0)
 				{
-					printf("Read data from server by sockfd[%d] failure: %s\n",
+					log_error("Read data from server by sockfd[%d] failure: %s\n",
 							sockfd, strerror(errno));
 					break;
 				}
 				else if(rv == 0)
 				{
-					printf("Socket[%d] get disconnected\n", sockfd);
+					log_warn("Socket[%d] get disconnected\n", sockfd);
 					break;
 				}
 				else if(rv > 0)
 				{
-					printf("Read %d bytes data from Server: %s\n",
+					log_info("Read %d bytes data from Server: %s\n",
 							rv, buf);
-					sleep(10);
+					break;
 				}
 
 			}
@@ -252,10 +254,10 @@ sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_ST
 			{
 				log_info("time not reached \n");
 				
-				rv = table_check_write_clean(db, sockfd, SN)
+				rv = Table_check_write_clean(db, sockfd, SN);
 				if(rv < 0)
 				{
-					log_warn("table have no more data\n");
+					log_warn("table_check_write_clean error\n");
 					continue;
 				}
 				log_info("send all data of table and clean table\n");
@@ -273,3 +275,4 @@ void stop(int signum)
 {
     pro_stop = 1;
 }
+

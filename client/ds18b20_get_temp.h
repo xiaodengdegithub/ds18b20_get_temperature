@@ -24,6 +24,8 @@
 #include<stdlib.h>
 #include<errno.h>
 
+#include "logger.h"
+
 #define CONFIG_DEBUG
 #ifdef  CONFIG_DEBUG
 #define dbg_print(format,args...) printf(format, ##args)

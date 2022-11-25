@@ -23,6 +23,8 @@
 //#include <netinet/in.h>	// 提供struct in_addr
 #include <arpa/inet.h>	// 提供inet_ntoa()
 
+#include "logger.h"
+
 #define CONFIG_DEBUG
 #ifdef  CONFIG_DEBUG
 #define dbg_print(format,args...) printf(format, ##args)
