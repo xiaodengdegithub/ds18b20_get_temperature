@@ -185,12 +185,10 @@ sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_ST
         }
 		
 		get_sn(SN, sizeof(SN));
-		T1 = get_time(datime, sizeof(datime));
-		dbg_print("T1:%ld", T1);
 
 		memset(buf, 0, sizeof(buf));
-		snprintf(buf, 1024, "%s / %s / %f \n", SN, datime, temp);
-		dbg_print("full data:%s", buf);
+		snprintf(buf, 1024, "%s/%s/%f\n", SN, datime, temp);
+		dbg_print("full data:%s\n", buf);
 		while(!pro_stop)
 		{
 			if(socket_connect_state(sockfd)<0)
@@ -200,12 +198,13 @@ sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_ST
 				if(sockfd > 0)
 				{
 					close(sockfd);
-					log_warn("sockfd[%d] close", sockfd);
+					log_warn("sockfd[%d] close\n", sockfd);
 				}
 				sockfd = socket_and_connect(servip, port);
 				log_info("socket connect again\n"); 
 			}
 
+			sleep(1);
 			T2 = get_time(datime, sizeof(datime));
 			dbg_print("T2:%ld\n", T2);
 			
@@ -228,6 +227,9 @@ sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_ST
 						Insert_Table(db, SN, datime, temp);
 						break;
 				}
+				log_info("write to server by sockfd[%d] successfully\n",sockfd);
+
+				T1 = T2;
 	
 				memset(buf, 0, sizeof(buf));
 				rv = read(sockfd, buf, sizeof(buf));

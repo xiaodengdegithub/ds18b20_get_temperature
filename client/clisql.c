@@ -52,7 +52,7 @@ int Create_Table(sqlite3 *db)
 	{
 		log_error("create table error:%s\n", zErrMsg);
 		sqlite3_free(zErrMsg);
-		return -2;
+		return -1;
 	}
 	else
 	{
@@ -74,7 +74,7 @@ int Insert_Table(sqlite3 *db, char *SN, char *datime, float temp)
     {
         log_error("insert table error:%s\n", zErrMsg);
         sqlite3_free(zErrMsg);
-        return -2;
+        return -1;
     }
     else
     {
@@ -94,30 +94,30 @@ int Table_check_write_clean(sqlite3 *db,int sockfd,char *SN)
 	int				rv;
 
 	memset(buf, 0, sizeof(buf));
-	snprintf(buf, sizeof(buf), "SELECT * FROM %s LIMIT 1;", TABLENAME);
+	snprintf(buf, sizeof(buf), "SELECT * FROM %s;", TABLENAME);
 
-	if(SQLITE_OK != sqlite3_exec(db, buf, callback, 0, &zErrMsg))
+	rv = sqlite3_get_table(db, buf, &dbResult, &nRow, &nColumn, &zErrMsg);
+	if(nRow<1)
 	{
 		log_warn("no more data\n");
 		sqlite3_free(zErrMsg);
-		return -3;
+		sqlite3_free_table(dbResult);
+		return 0;
 	}
 	
-	memset(buf, 0, sizeof(buf));
-	snprintf(buf, sizeof(buf), "SELECT * FROM %s;",TABLENAME);
-
-	if(SQLITE_OK != sqlite3_get_table(db, buf, &dbResult, &nRow, &nColumn, &zErrMsg))
+	if(SQLITE_OK != rv)
 	{
 		log_error("got data error\n");
 		sqlite3_free(zErrMsg);
-		return -4;
+		sqlite3_free_table(dbResult);
+		return -1;
 	}
 
 	memset(buf, 0, sizeof(buf));
 	for(int i=1; i<=nRow; i++)
 	{
 		memset(buf, 0, sizeof(buf));
-		snprintf(buf, sizeof(buf), "%s/%s/%f", dbResult[i*nColumn + 0], dbResult[i*nColumn + 1], atof(dbResult[i*nColumn + 2]) );
+		snprintf(buf, sizeof(buf), "%s/%s/%f\n", dbResult[i*nColumn + 0], dbResult[i*nColumn + 1], atof(dbResult[i*nColumn + 2]) );
 		
 		rv = write(sockfd, buf, strlen(buf));
 		if(rv < 0)
@@ -132,15 +132,16 @@ int Table_check_write_clean(sqlite3 *db,int sockfd,char *SN)
 					sockfd);
 		}
 	}
-	memset(buf, 0, sizeof(buf));
-	snprintf(buf, sizeof(buf), "DELETE * FROM %s;", TABLENAME);
+	sqlite3_free_table(dbResult);
 
-	if(SQLITE_OK != sqlite3_get_table(db, buf, &dbResult, &nRow, &nColumn, &zErrMsg))
+	memset(buf, 0, sizeof(buf));
+	snprintf(buf, sizeof(buf), "DELETE  FROM %s;", TABLENAME);
+
+	if(SQLITE_OK != sqlite3_exec(db, buf, callback, 0, &zErrMsg))
     {
         log_error("delete data error\n");
         sqlite3_free(zErrMsg);
-        return -5;
+        return -2;
     }
 
 }
-
