@@ -2,8 +2,8 @@
  *      Copyright:  (C) 2022 Deng Yonghao<dengyonghao2001@163.com>
  *                  All rights reserved.
  *
- *       Filename:  server.c
- *    Description:  This file 
+ *       Filename:  main.c
+ *    Description:  This file server main 
  *                 
  *        Version:  1.0.0(2022年11月12日)
  *         Author:  Deng Yonghao <dengyonghao2001@163.com>
@@ -11,23 +11,27 @@
  *                 
  ********************************************************************************/
 
-#include "server.h"
+#include "main.h"
 
 int main(int argc, char **argv)
 {
-	int			listenfd, connfd;
-	int			serv_port = 0;
-	int			daemon_run = 0;
-	char		*progname = NULL;
-	int			opt;
-	int			rv;
-	int			i, j;
-	int			found;
-	char		buf[1024];
-	int			epollfd;
-	struct		epoll_event event;
-	struct		epoll_event event_array[MAX_EVENTS];
-	int			events;
+	int					listenfd, connfd;
+	int					serv_port = 0;
+	int					daemon_run = 0;
+	char				*progname = NULL;
+	int					opt;
+	int					rv;
+	int					i, j;
+	int					found;
+	char				buf[1024];
+	int					epollfd;
+	struct				epoll_event event;
+	struct				epoll_event event_array[MAX_EVENTS];
+	int					events;
+	sqlite3				*db;
+	char				SN[16];
+	float				temp;
+	char				datime[100];
 
 	struct		option long_options[] =
 	{ 
@@ -62,13 +66,22 @@ int main(int argc, char **argv)
 		print_usage(progname);
 		return -1;
 	}
-
+	if(logger_init("stdout",LOG_LEVEL_DEBUG)<0)
+	{
+		fprintf(stderr, "initial logger system failure\n");
+		dbg_print("initial logger system failure\n");
+		return -2;
+	}
+	
 	set_socket_rlimit(); /* set max open socket count */
 	
+	signal(SIGINT, stop);
+	signal(SIGTERM, stop);	
+
 	if( (listenfd=socket_server_init(NULL, serv_port)) < 0 )
 	{
 		printf("ERROR: %s server listen on port %d failure\n", argv[0],serv_port);
-		return -2;
+		return -3;
 	}
 	printf("%s server start to listen on port %d\n", argv[0],serv_port);
 
@@ -77,6 +90,8 @@ int main(int argc, char **argv)
 	{
 		daemon(0, 0);
 	}
+
+	Create_Database(&db);
 
 	if( (epollfd=epoll_create(MAX_EVENTS)) < 0 )
 	{
@@ -92,7 +107,7 @@ int main(int argc, char **argv)
 		printf("epoll add listen socket failure: %s\n", strerror(errno));
 		return -4;
 	}
-	for ( ; ; )
+	while(!pro_stop)
 	{
 		/* program will blocked here */
 		events = epoll_wait(epollfd, event_array, MAX_EVENTS, -1);
@@ -139,6 +154,7 @@ int main(int argc, char **argv)
 			}
 			else /* already connected client socket get data incoming */
 			{
+				memset(buf, 0, sizeof(buf));
 				if( (rv=read(event_array[i].data.fd, buf, sizeof(buf))) <= 0)
 				{
 					printf("socket[%d] read failure or get disconncet and will be removed.\n",
@@ -150,16 +166,16 @@ int main(int argc, char **argv)
 				else
 				{
 					printf("socket[%d] read get %d bytes data\n", event_array[i].data.fd, rv);
-		
-					/* convert letter from lowercase to uppercase */
-					for(j=0; j<rv; j++)
-						buf[j]=toupper(buf[j]);
-					if( write(event_array[i].data.fd, buf, rv) < 0 )
-					{
-						printf("socket[%d] write failure: %s\n", event_array[i].data.fd, strerror(errno));
-						epoll_ctl(epollfd, EPOLL_CTL_DEL, event_array[i].data.fd, NULL);
-						close(event_array[i].data.fd);
-					}
+					
+					SN = strtok(buf, "/");
+					log_info("SN: %s", SN);
+					datime = strtok(NULL, "/");
+					log_info("datime: %s", datime);
+					temp = atof(strtok(NULL, "\n"));
+					log_info("temp: %f", temp);
+
+					Create_Table(db, SN);
+					Insert_Table(db, SN, datime, temp);
 				}
 			}
 		} /* for(i=0; i<rv; i++) */

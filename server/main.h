@@ -33,6 +33,7 @@
 #include "logger.h"
 #include "socket_funcs.h"
 #include "functions.h"
+#include "sersql.h"
 
 #define CONFIG_DEBUG
 #ifdef  CONFIG_DEBUG

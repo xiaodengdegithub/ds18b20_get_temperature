@@ -13,7 +13,7 @@
 
 #include "functions.h"
 
-static inline void print_usage(char *progname)
+void print_usage(char *progname)
 {
     log_warn("Usage: %s [OPTION]...\n", progname);
 

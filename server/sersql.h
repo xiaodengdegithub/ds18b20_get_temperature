@@ -29,7 +29,11 @@
 #define dbg_print(format,args...) do{} while(0)
 #endif     /* -----  not CONFIG_DEBUG  ----- */
 
+#define TABLENAME "server_table"
 
-
+int Create_Database(sqlite3 **db);
+static int callback(void *NotUsed, int argc, char **argv, char **azColName);
+int Create_Table(sqlite3 *db);
+int Insert_Table(sqlite3 *db, char *SN, char *datime, float temp);
 
 #endif

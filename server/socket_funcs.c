@@ -21,7 +21,7 @@ int socket_server_init(char *listen_ip, int listen_port)
 	int listenfd;
 	if ( (listenfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 	{
-		 dbg_printf("Use socket() to create a TCP socket failure: %s\n", strerror(errno));
+		 dbg_print("Use socket() to create a TCP socket failure: %s\n", strerror(errno));
 		return -1;
 	}
 
@@ -38,20 +38,20 @@ int socket_server_init(char *listen_ip, int listen_port)
 	{
 		if (inet_pton(AF_INET, listen_ip, &servaddr.sin_addr) <= 0)
 		{
-			 dbg_printf("inet_pton() set listen IP address failure.\n");
+			 dbg_print("inet_pton() set listen IP address failure.\n");
 			rv = -2;
 			goto CleanUp;
 		}
 	}
 	if(bind(listenfd, (struct sockaddr *) &servaddr, sizeof(servaddr)) < 0)
 	{
-		 dbg_printf("Use bind() to bind the TCP socket failure: %s\n", strerror(errno));
+		 dbg_print("Use bind() to bind the TCP socket failure: %s\n", strerror(errno));
 		rv = -3;
 		goto CleanUp;
 	}
 	if(listen(listenfd, 64) < 0)
 	{
-		 dbg_printf("Use bind() to bind the TCP socket failure: %s\n", strerror(errno));
+		 dbg_print("Use bind() to bind the TCP socket failure: %s\n", strerror(errno));
 		rv = -4;
 		goto CleanUp;
 	}
@@ -70,7 +70,7 @@ void set_socket_rlimit(void)
     getrlimit(RLIMIT_NOFILE, &limit );
     limit.rlim_cur = limit.rlim_max;
     setrlimit(RLIMIT_NOFILE, &limit );
-     dbg_printf("set socket open fd max count to %ld\n", limit.rlim_max);
+    dbg_print("set socket open fd max count to %ld\n", limit.rlim_max);
 }
 
 

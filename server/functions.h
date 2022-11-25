@@ -14,8 +14,9 @@
 #ifndef _FUNCTIONS_H_
 #define _FUNCTIONS_H_
 
-#include<stdio.h>
+#include <stdio.h>
 #include <time.h>
+#include <stdlib.h>
 
 #include "logger.h"
 
@@ -26,6 +27,6 @@
 #define dbg_print(format,args...) do{} while(0)
 #endif     /* -----  not CONFIG_DEBUG  ----- */
 
-static inline void print_usage(char *progname);
+void print_usage(char *progname);
 
 #endif

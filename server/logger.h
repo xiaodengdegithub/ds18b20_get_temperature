@@ -14,6 +14,12 @@
 #ifndef  _LOGGER_H_
 #define  _LOGGER_H_
 
+#include <stdio.h>
+#include <errno.h>
+#include <time.h>
+#include <stdarg.h>
+#include <string.h>
+
 /*
  * logger level
  */
