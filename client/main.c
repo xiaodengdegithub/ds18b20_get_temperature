@@ -91,6 +91,7 @@ int main(int argc, char **argv)
 		domain_getaddrinfo(&servdn);
 		servip=servdn;
 		log_info("%s",servdn);
+		/*已封装到domain_getaddrinfo函数当中*/
 		/*
 		memset(&ainfo, 0, sizeof(ainfo));   //将存放信息的结构体清零
 		ainfo.ai_flags = AI_PASSIVE;      //写入期望返回的结构体的相关信息
@@ -143,6 +144,7 @@ int main(int argc, char **argv)
 	Create_Table(db);
 
 	sockfd=socket_and_connect(servip, port);
+	/*已封装为sock_and_connect函数中*/
 /*
 sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_STREAM，参数3自适应为0
 	if(sockfd < 0)

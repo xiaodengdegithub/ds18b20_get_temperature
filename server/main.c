@@ -29,9 +29,9 @@ int main(int argc, char **argv)
 	struct				epoll_event event_array[MAX_EVENTS];
 	int					events;
 	sqlite3				*db;
-	char				SN[16];
+	char				*SN;
 	float				temp;
-	char				datime[100];
+	char				*datime;
 
 	struct		option long_options[] =
 	{ 
@@ -66,7 +66,8 @@ int main(int argc, char **argv)
 		print_usage(progname);
 		return -1;
 	}
-	if(logger_init("stdout",LOG_LEVEL_DEBUG)<0)
+	if(logger_init("server_run.log",LOG_LEVEL_DEBUG)<0)
+	//if(logger_init("stdout",LOG_LEVEL_DEBUG)<0)
 	{
 		fprintf(stderr, "initial logger system failure\n");
 		dbg_print("initial logger system failure\n");
@@ -174,7 +175,7 @@ int main(int argc, char **argv)
 					temp = atof(strtok(NULL, "\n"));
 					log_info("temp: %f", temp);
 
-					Create_Table(db, SN);
+					Create_Table(db);
 					Insert_Table(db, SN, datime, temp);
 				}
 			}

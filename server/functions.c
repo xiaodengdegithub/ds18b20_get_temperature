@@ -26,6 +26,19 @@ void print_usage(char *progname)
     log_warn(" -h[help ] Display this help information\n");
 
     log_warn("\nExample: %s -p 8900 -b\n", progname);
+
+	dbg_print("Usage: %s [OPTION]...\n", progname);
+
+    dbg_print(" %s is a socket server program, which used to verify client and echo back string from it\n",
+            progname);
+    dbg_print("\nMandatory arguments to long options are mandatory for short options too:\n");
+
+    dbg_print(" -p[port ] Socket server port address\n");
+    dbg_print(" -b[daemon ] set program running on background\n");
+    dbg_print(" -h[help ] Display this help information\n");
+
+    dbg_print("\nExample: %s -p 8900 -b\n", progname);
+
     return ;
 }
 

@@ -29,6 +29,7 @@
 #include <netinet/in.h>
 #include <sys/epoll.h>
 #include <sys/resource.h>
+#include <signal.h>
 
 #include "logger.h"
 #include "socket_funcs.h"
