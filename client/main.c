@@ -120,8 +120,8 @@ int main(int argc, char **argv)
 		*/
 	}
 
-	//if(logger_init("running.log",LOG_LEVEL_DEBUG)<0)
-	if(logger_init("stdout",LOG_LEVEL_DEBUG)<0)
+	if(logger_init("running.log",LOG_LEVEL_DEBUG)<0)
+	//if(logger_init("stdout",LOG_LEVEL_DEBUG)<0)
 	{
 		fprintf(stderr, "initial logger system failure\n");
 		dbg_print("initial logger system failure\n");
@@ -195,6 +195,7 @@ sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_ST
 		dbg_print("full data: %s\n", buf);
 		while(!pro_stop)
 		{
+			sleep(2);
 			if(socket_connect_state(sockfd)<0)
 			{
 				dbg_print("sockfd[%d] disconnected!\n", sockfd);
@@ -208,7 +209,6 @@ sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_ST
 				log_info("socket connect again\n"); 
 			}
 
-			sleep(1);
 			T2 = get_time(datime, sizeof(datime));
 			dbg_print("T2:%ld\n", T2);
 			
@@ -236,25 +236,8 @@ sockfd = socket(AF_INET, SOCK_STREAM, 0);//ipv4选AF_INET,为TCP所以选SOCK_ST
 				T1 = T2;
 	
 				memset(buf, 0, sizeof(buf));
-				rv = read(sockfd, buf, sizeof(buf));
-				if(rv < 0)
-				{
-					log_error("Read data from server by sockfd[%d] failure: %s\n",
-							sockfd, strerror(errno));
-					break;
-				}
-				else if(rv == 0)
-				{
-					log_warn("Socket[%d] get disconnected\n", sockfd);
-					break;
-				}
-				else if(rv > 0)
-				{
-					log_info("Read %d bytes data from Server: %s\n",
-							rv, buf);
-					break;
-				}
-
+				
+				break;
 			}
 			else
 			{
@@ -281,4 +264,5 @@ void stop(int signum)
 {
     pro_stop = 1;
 }
+
 

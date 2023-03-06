@@ -177,6 +177,10 @@ int main(int argc, char **argv)
 
 					Create_Table(db);
 					Insert_Table(db, SN, datime, temp);
+					
+					//epoll_ctl(epollfd, EPOLL_CTL_DEL, event_array[i].data.fd, NULL);
+					//close(event_array[i].data.fd);
+					//continue;
 				}
 			}
 		} /* for(i=0; i<rv; i++) */
@@ -190,4 +194,5 @@ void stop(int signum)
 {
     pro_stop = 1;
 }
+
 
