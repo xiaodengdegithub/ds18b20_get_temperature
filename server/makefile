@@ -4,7 +4,7 @@ all:
 	@echo "Creat project"
 	make -C project
 run:
-	@echo "Client running"
+	@echo "Server running"
 	make run -C project
 clean:
 	@echo "clean"
@@ -14,3 +14,4 @@ distclean: clean
 	@echo "distclean"
 	make uninstall -C src
 	make distclean -C project
+
